@@ -3,7 +3,7 @@
 #define NUM_LEDS 260
 #define LED_PIN 2
 int ledPower = 30;
-int fontColor[] = { 60, 60, 60};
+int fontColor[] = { 30, 30, 30};
 CRGB led[NUM_LEDS];
 
 void initBoard() {

@@ -11,37 +11,41 @@ struct samplePoint {
   int failsafe;
 };
 
-const int fromFreqScan = 5650;
+const int fromFreqScan = 5645;
 const int toFreqScan = 5945;
-const PROGMEM int scanFreqArray[] = {5645, 5658, 5665, 5685, 5695, 5705, 5725, 5732, 5733, 5740, 5745, 5752, 5760, 5765, 5769, 5771, 5780, 5785, 5790, 5800, 5805, 5806, 5809, 5820, 5825, 5828, 5840, 5843, 5845, 5847, 5860, 5865, 5866, 5880, 5880, 5885, 5905, 5917, 5925, 5945};
+const PROGMEM int scanFreqArray[] = {5645, 5658, 5665, 5685, 5695, 5705, 5725, 5732, 5733, 5740, 5745, 5752, 5760, 5765, 5769, 5771, 5780, 5785, 5790, 5800, 5805, 5806, 5809, 5820, 5825, 5828, 5840, 5843, 5845, 5847, 5860, 5865, 5866, 5880, 5885, 5905, 5917, 5925, 5945};
+int samplesAmount = 40;
 samplePoint samples[40];
 int freqArray[] = {5658, 5732, 5843, 5917};
+//int freqArray[] = {5658, 5732, 5806, 5880};
 int freqRssiArray[4];
-const boolean scaled = false;
+const boolean scaled = true;
 const int failesafe = -4;
-int threshold = 650;
+int threshold = 195;
 uint16_t currentTunerFreqInMhz = 0;
 char out[8];
 char minScale[8];
 char maxScale[8];
+int fidx = 0;
 
 const int baseColumn = 61;
 const int endColumn = 128;
 const int baseRow = 5;
 const int endRow = 63;
 
- If using software SPI (the default case):
+// If using software SPI (the default case):
 #define OLED_MOSI   6
 #define OLED_CLK   7
 #define OLED_DC    4
 #define OLED_CS    3
 #define OLED_RESET 5
 
-U8GLIB_SH1106_128X64 u8g(4, 3, 6, 2, 5);
+U8GLIB_SH1106_128X64 u8g(OLED_CLK, OLED_MOSI, OLED_CS, OLED_DC, OLED_RESET);
 
 void setup() {
+//  analogReference(INTERNAL);
   if (scaled) {
-    threshold = 20;
+    threshold = 28;
   }
   initBoard();
   for (int i = 0 ; i < 4 ; i++) {
@@ -56,22 +60,25 @@ void setup() {
 }
 
 void loop() {
-  for (int f = 0; f < 40; f++) {
-    setCurrentFreqByMhz(samples[f].freq);
-    if (isInFPVUseFreq(samples[f]) == true) {
-      processFPVChannels(samples[f]);
-    } else {
-      ponele();
-      samples[f].rssi = readRssiValue();
-    }
+  setCurrentFreqByMhz(samples[fidx].freq);
+  waitRssiReady();
+  if (isInFPVUseFreq(samples[fidx]) == true) {
+    processFPVChannels(samples[fidx]);
+  } else {
+//    ponele();
+    samples[fidx].rssi = readRssiValue();
   }
-/
-  updateDisplay();
+  fidx++;
+  if (fidx == samplesAmount) {
+    fidx = 0;
+    updateDisplay();
+  }
+
 }
 
 void initializeSamples() {
 
-  for (int a = 0; a < 40; a++) {
+  for (int a = 0; a < samplesAmount; a++) {
     samplePoint sample;
     samples[a] = sample;
     samples[a].freq = pgm_read_word_near(&scanFreqArray[a]);
@@ -87,7 +94,7 @@ void ponele() {
 }
 
 void processFPVChannels(samplePoint& sample) {
-  waitRssiReady();
+//  waitRssiReady();
   sample.rssi = readRssiValue();
   freqRssiArray[isInFPVUseFreqIndex(sample)] = sample.rssi;
   if (sample.rssi > threshold) {
@@ -161,7 +168,7 @@ void draw(void) {
   }
   int rssiLine = 0;
   if (scaled == true) {
-    rssiLine = map(20, 0, 100, baseRow, endRow );
+    rssiLine = map(threshold, 0, 100, baseRow, endRow );
   } else {
     rssiLine = map(threshold, DEF_RAWRSSI_MIN, DEF_RAWRSSI_MAX, baseRow, endRow );
   }

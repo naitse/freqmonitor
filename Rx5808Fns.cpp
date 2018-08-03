@@ -219,7 +219,7 @@ uint16_t scaleRawRssiValue(uint16_t rawRssiVal)
 // Returns:  An raw RSSI value.
 uint16_t sampleRawRssiValue()
 {
-  analogRead(rx5808RssiInPin);         //pre-read to improve I/O
+//  analogRead(rx5808RssiInPin);         //pre-read to improve I/O
   return analogRead(rx5808RssiInPin);
 }
 
