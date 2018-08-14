@@ -27,7 +27,7 @@
 #define RSSI_SAMPAVG_COUNT 50          //averaging size for RSSI out
 
 
-#define DEF_RAWRSSI_MIN 180            //min-raw-RSSI value for scaling
+#define DEF_RAWRSSI_MIN 150            //min-raw-RSSI value for scaling
 #define DEF_RAWRSSI_MAX 229
 
 //#define DEF_RAWRSSI_MIN 540            //min-raw-RSSI value for scaling

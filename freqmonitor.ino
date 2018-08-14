@@ -45,7 +45,7 @@ U8GLIB_SH1106_128X64 u8g(OLED_CLK, OLED_MOSI, OLED_CS, OLED_DC, OLED_RESET);
 void setup() {
 //  analogReference(INTERNAL);
   if (scaled) {
-    threshold = 28;
+    threshold = 24;
   }
   initBoard();
   for (int i = 0 ; i < 4 ; i++) {

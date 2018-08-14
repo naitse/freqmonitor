@@ -2,8 +2,8 @@
 
 #define NUM_LEDS 260
 #define LED_PIN 2
-int ledPower = 30;
-int fontColor[] = { 30, 30, 30};
+int ledPower = 70;
+int fontColor[] = { 100, 100, 100};
 CRGB led[NUM_LEDS];
 
 void initBoard() {
@@ -82,9 +82,6 @@ void drawRightBottom(int boardIndex) {
     led[45 + i + board] = CRGB(fontColor[0], fontColor[1], fontColor[2]);
     led[53 + i + board] = CRGB(fontColor[0], fontColor[1], fontColor[2]);
   }
-  //  led[38 + board] = CRGB(fontColor[0], fontColor[1], fontColor[2]);
-  //  led[46 + board] = CRGB(fontColor[0], fontColor[1], fontColor[2]);
-  //  led[54 + board] = CRGB(fontColor[0], fontColor[1], fontColor[2]);
   FastLED.show();
 }
 
